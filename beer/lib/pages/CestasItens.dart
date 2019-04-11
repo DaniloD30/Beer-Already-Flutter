@@ -221,8 +221,8 @@ class CestaItensForm extends StatefulWidget {
 }
 
 class CestaItens extends State<CestaItensForm> {
-  final TextEditingController controllerNome = new TextEditingController();
-  final TextEditingController controllerEndereco = new TextEditingController();
+  //final TextEditingController controllerNome = new TextEditingController();
+  //final TextEditingController controllerEndereco = new TextEditingController();
 
   final Cesta cesta;
   final String nome ;
@@ -238,12 +238,16 @@ class CestaItens extends State<CestaItensForm> {
   @override
   Widget build(BuildContext context) {
 
-  /* listBebidas = returnBebidas();
+   listBebidas = returnBebidas();
    listItens = returnItens();
 
     //listBebidas = BebidaDAO.retrieveAll();
     //listBebidas.then(onValue);
   // print(listBebidas[1].fabricante);
+    
+    //Preciso percorrer a lista de itens, pegar o objeto item(produto) com o mesmo ID da minha cesta selecionada no " On Tap ",
+   // percorrer a lista de bebidas, e verificar qual bebida é o id relacionado la na cesta. ( essa parte eu posso buscar direto pelo id)
+     
     for(var i in listItens){
       if (i.id_cesta == this.id){
           for(var bebida in listBebidas){
@@ -254,17 +258,14 @@ class CestaItens extends State<CestaItensForm> {
       }
     }
 
-    _createListViewBebidasOrdenadas(context, bebidasCesta);*/
+    _createListViewBebidasOrdenadas(context, bebidasCesta);
 
     String miliText = null;
     // TODO: implement build
     return new Scaffold(
 
         appBar: new AppBar(title: new Text("Bebidas da cesta"), backgroundColor: Colors.deepOrangeAccent,),
-        // PRECISO PEGAR TODOS MEUS ITENS,
-        // TODAS AS MINHAS BEBIDAS,
-        // LOOP PARA VER SE O ITEM TEM O MSMO ID DA CESTA
-        // PERCORRER A LISTA DE ITENS COM A CONDIÇÃO SE ITENS.IDBEBIDA == ID BEBIDA
+        
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () async {
             Navigator.push(

@@ -45,6 +45,11 @@ class Bebida {
     return this.id.toString() + " - " + this.fabricante;
   }
 
+  compareTo(Bebida b) {
+    return (this.preco > b.preco) ? 1
+        : (this.preco < b.preco) ? -1 : 0;
+  }
+
 
 }
 

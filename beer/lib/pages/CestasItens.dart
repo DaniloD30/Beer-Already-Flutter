@@ -31,23 +31,23 @@ class _HomePageState extends State<AddBebidaCesta> {
     return new Scaffold(
         appBar: new AppBar(title: new Text("Bebidas cadastradas"), backgroundColor: Colors.deepOrange,),
         body: new Center(
-          child: FutureBuilder(
-            future: BebidaDAO.retrieveAll(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                  return new CircularProgressIndicator();
-                default:
-                  if (snapshot.hasError)
+            child: FutureBuilder(
+              future: BebidaDAO.retrieveAll(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return new CircularProgressIndicator();
+                  default:
+                    if (snapshot.hasError)
 
-                    return new Text('Error: ${snapshot.error}');
-                  else {
-                    return _createListView(context, snapshot, this.cesta.id);
-                  }
-              }
-            },
-          )
+                      return new Text('Error: ${snapshot.error}');
+                    else {
+                      return _createListView(context, snapshot, this.cesta.id);
+                    }
+                }
+              },
+            )
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
@@ -59,7 +59,7 @@ class _HomePageState extends State<AddBebidaCesta> {
             );
           },
           backgroundColor: Colors.deepOrange,
-         // backgroundColor: Colors.deepOrange,
+          // backgroundColor: Colors.deepOrange,
           label: Text("Adicionar nova bebida"),
           icon: Icon(Icons.save),
           //child: Icon(Icons.add),
@@ -89,9 +89,9 @@ _createListView(BuildContext context, AsyncSnapshot snapshot, int idCesta) {
                 Toast.show("Bebida adicionada na cesta!", context, duration: Toast.LENGTH_LONG);
                 Item i = new Item(id: 0, id_cesta:idCesta, id_bebida:bebidas[index].id );
                 Future<Item> novaCesta = ItemDAO.create(i);
-                },
+              },
               contentPadding://his.bebida, this.fabricante, this.estabelecimento, this.mililitros, this.preco}
-              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 2.0),
               leading: Container(
                   padding: EdgeInsets.only(right: 12.0),
                   decoration: new BoxDecoration(
@@ -118,8 +118,9 @@ _createListView(BuildContext context, AsyncSnapshot snapshot, int idCesta) {
               ),
               subtitle: Row(
                 children: <Widget>[
-                  Icon(Icons.linear_scale, color: Colors.deepOrange),
-                  Text(" ID: " + bebidas[index].id.toString(), style: TextStyle(color: Colors.white))
+                  Icon(Icons.arrow_forward, color: Colors.deepOrange),
+                  Text(" Preço:" + bebidas[index].preco.toString()+ " Reais", style: TextStyle(color: Colors.white)),
+                  Text("  Ml: " + bebidas[index].mililitros.toString(), style: TextStyle(color: Colors.white))
                 ],
               ),
               trailing: GestureDetector(
@@ -143,14 +144,17 @@ _createListView(BuildContext context, AsyncSnapshot snapshot, int idCesta) {
   );
 }
 
-_createListViewBebidasOrdenadas(BuildContext context, List<Bebida> snapshot) {
+_createListViewBebidasOrdenadas(BuildContext context, AsyncSnapshot snapshot) {
 
-  List<Bebida> bebidas = snapshot;
+  List<Bebida> bebidas = snapshot.data;
+  bebidas.sort((Bebida a, Bebida b) => a.compareTo(b));
+
   return new ListView.builder(
     scrollDirection: Axis.vertical,
     shrinkWrap: true,
     itemCount: bebidas.length,
     itemBuilder: (BuildContext context, int index) {
+
       return new Card(
         elevation: 8.0,
         margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -158,7 +162,7 @@ _createListViewBebidasOrdenadas(BuildContext context, List<Bebida> snapshot) {
           decoration: BoxDecoration(color: Colors.orangeAccent),
           child: ListTile(
               contentPadding://his.bebida, this.fabricante, this.estabelecimento, this.mililitros, this.preco}
-              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 2.0),
               leading: Container(
                   padding: EdgeInsets.only(right: 12.0),
                   decoration: new BoxDecoration(
@@ -166,16 +170,7 @@ _createListViewBebidasOrdenadas(BuildContext context, List<Bebida> snapshot) {
                           right:
                           new BorderSide(width: 1.0, color: Colors.white24))),
                   child: GestureDetector(
-                    child: Icon(Icons.delete, color: Colors.white),
-                    onTap: () async {
-                      bool success = (await BebidaDAO.remove(bebidas[index].id));
-                      if(success) {
-                        Toast.show("Bebida deletada com sucesso!", context, duration: Toast.LENGTH_LONG);
-                        bebidas.remove(bebidas[index]);
-                      } else {
-                        Toast.show("Erro ao deletar. Tente novamente!", context, duration: Toast.LENGTH_LONG);
-                      }
-                    },
+                    child: Icon(Icons.local_bar, color: Colors.white),
                   )
               ),
               title: Text(
@@ -185,8 +180,10 @@ _createListViewBebidasOrdenadas(BuildContext context, List<Bebida> snapshot) {
               ),
               subtitle: Row(
                 children: <Widget>[
-                  Icon(Icons.linear_scale, color: Colors.deepOrange),
-                  Text(" ID: " + bebidas[index].id.toString(), style: TextStyle(color: Colors.white))
+                  Icon(Icons.arrow_forward, color: Colors.deepOrange),
+                  Text(" Preço:" + bebidas[index].preco.toString()+ " Reais", style: TextStyle(color: Colors.white)),
+                  Text("  Ml: " + bebidas[index].mililitros.toString(), style: TextStyle(color: Colors.white))
+
                 ],
               ),
               trailing: GestureDetector(
@@ -238,34 +235,29 @@ class CestaItens extends State<CestaItensForm> {
   @override
   Widget build(BuildContext context) {
 
-   listBebidas = returnBebidas();
-   listItens = returnItens();
-
-    //listBebidas = BebidaDAO.retrieveAll();
-    //listBebidas.then(onValue);
-  // print(listBebidas[1].fabricante);
-    
-    //Preciso percorrer a lista de itens, pegar o objeto item(produto) com o mesmo ID da minha cesta selecionada no " On Tap ",
-   // percorrer a lista de bebidas, e verificar qual bebida é o id relacionado la na cesta. ( essa parte eu posso buscar direto pelo id)
-     
-    for(var i in listItens){
-      if (i.id_cesta == this.id){
-          for(var bebida in listBebidas){
-            if (bebida.id == i.id_bebida){
-              bebidasCesta.add(bebida);
-            }
-          }
-      }
-    }
-
-    _createListViewBebidasOrdenadas(context, bebidasCesta);
-
     String miliText = null;
     // TODO: implement build
     return new Scaffold(
 
         appBar: new AppBar(title: new Text("Bebidas da cesta"), backgroundColor: Colors.deepOrangeAccent,),
-        
+        body: new Center(
+            child: FutureBuilder(
+              future: ItemDAO.retrieveItemsByCesta(cesta.id),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return new CircularProgressIndicator();
+                  default:
+                    if (snapshot.hasError)
+                      return new Text('Error: ${snapshot.error}');
+                    else {
+                      return _createListViewBebidasOrdenadas(context, snapshot);
+                    }
+                }
+              },
+            )
+        ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () async {
             Navigator.push(
@@ -280,70 +272,7 @@ class CestaItens extends State<CestaItensForm> {
     return null;
   }
 
-  List<Bebida> retornaListBebidas(){
-    List<Bebida> list;
-    new Center(
-        child: FutureBuilder(
-          future: BebidaDAO.retrieveAll(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-              case ConnectionState.waiting:
-                return new CircularProgressIndicator();
-              default:
-                if (snapshot.hasError)
-                  return new Text('Error: ${snapshot.error}');
-                else {
-                  list = snapshot.data;
-                  print(list.length);
-                }
-            }
-          },
-        ));
-    return list;
-  }
 
-  List<Item> retornaListItens(){
-    List<Item> list;
-    new Center(
-        child: FutureBuilder(
-          future: ItemDAO.retrieveAll(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-              case ConnectionState.waiting:
-                return new CircularProgressIndicator();
-              default:
-                if (snapshot.hasError)
-                  return new Text('Error: ${snapshot.error}');
-                else {
-                  list = snapshot.data;
-                }
-            }
-          },
-        ));
-    return list;
-  }
-
-  List<Bebida> returnBebidas(){
-    List<Bebida> b;
-    BebidaDAO.retrieveAll().then(
-        (bebidas) => {
-          b = bebidas
-        }
-    );
-    return b;
-  }
-
-  List<Item> returnItens(){
-    List<Item> b;
-    ItemDAO.retrieveAll().then(
-            (bebidas) => {
-        b = bebidas
-        }
-    );
-    return b;
-  }
 
 
 

@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
               ),
               new ListTile(
                   title: new Text("Cadastrar Bebidas"),
-                  trailing: new Icon(Icons.arrow_forward_ios),
+                  trailing: new Icon(Icons.local_bar),
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new BebidaForm()));
@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
               ),
               new ListTile(
                   title: new Text("Cadastrar Estabelecimento"),
-                  trailing: new Icon(Icons.arrow_forward_ios),
+                  trailing: new Icon(Icons.local_convenience_store),
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new EstabelecimentoForm()));
@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                                               cesta: cestas[index], nome: cestas[index].nome, id: cestas[index].id)));
                 },
                 contentPadding:
-                EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                EdgeInsets.symmetric(horizontal: 20.0, vertical: 2.0),
                 leading: Container(
                     padding: EdgeInsets.only(right: 12.0),
                     decoration: new BoxDecoration(
@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 subtitle: Row(
                   children: <Widget>[
-                    Icon(Icons.linear_scale, color: Colors.deepOrange),
+                    Icon(Icons.arrow_forward, color: Colors.deepOrange),
                     Text(" ID: " + cestas[index].id.toString(), style: TextStyle(color: Colors.white))
                   ],
                 ),

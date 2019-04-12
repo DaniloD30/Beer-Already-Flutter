@@ -60,8 +60,8 @@ class CadastroBebidas extends State<BebidaForm> {
     if (bebida != null) {
       nomeC.text = bebida.fabricante;
       estabalecimentoController.text = bebida.estabelecimento;
-      mililitrosController.text = bebida.mililitros as String;
-      precoController.text = bebida.preco as String;
+      mililitrosController.text = bebida.mililitros.toString();
+      precoController.text = bebida.preco.toStringAsFixed(2);
     }
     String miliText = null;
     // TODO: implement build
